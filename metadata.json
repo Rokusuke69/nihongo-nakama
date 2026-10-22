@@ -1,0 +1,8 @@
+{
+  "name": "Nihongo Nakama",
+  "description": "Comprehensive Japanese language learning companion and JLPT N5–N1 workspace with traditional Japanese aesthetics, kanji, vocabulary, grammar, and folk tale reader.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

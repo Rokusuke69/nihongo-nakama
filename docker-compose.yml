@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nihongo_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: nihongo_user
+      POSTGRES_PASSWORD: nihongo_secure_password_2026
+      POSTGRES_DB: nihongo_nakama_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nihongo_user -d nihongo_nakama_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nihongo_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://nihongo_user:nihongo_secure_password_2026@postgres:5432/nihongo_nakama_db?schema=public"
+      JWT_SECRET: "nihongo_super_secret_jwt_key_sakura_2026"
+      NODE_ENV: "production"
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    driver: local

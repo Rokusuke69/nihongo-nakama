@@ -1,0 +1,143 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum JLPTLevel {
+  N5
+  N4
+  N3
+  N2
+  N1
+}
+
+enum Role {
+  USER
+  ADMIN
+  SENSEI
+}
+
+model User {
+  id                  String           @id @default(uuid())
+  username            String           @unique
+  email               String           @unique
+  passwordHash        String
+  role                Role             @default(USER)
+  dailyGoalMinutes    Int              @default(30)
+  streakDays          Int              @default(0)
+  lastActiveDate      DateTime         @default(now())
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  vocabularies        Vocabulary[]
+  kanjis              Kanji[]
+  grammarNotes        GrammarNote[]
+  readingMaterials    ReadingMaterial[]
+  activityLogs        ActivityLog[]
+  studySessions       StudySession[]
+
+  @@index([email])
+}
+
+model Vocabulary {
+  id              String      @id @default(uuid())
+  userId          String
+  japanese        String
+  furigana        String
+  romaji          String
+  meaning         String
+  level           JLPTLevel   @default(N5)
+  partOfSpeech    String      @default("Noun")
+  isFavorite      Boolean     @default(false)
+  isLearned       Boolean     @default(false)
+  srsRepetitions  Int         @default(0)
+  srsIntervalDays Int         @default(1)
+  srsEaseFactor   Float       @default(2.5)
+  nextReviewDate  DateTime    @default(now())
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, level])
+  @@index([nextReviewDate])
+}
+
+model Kanji {
+  id            String      @id @default(uuid())
+  userId        String
+  kanji         String
+  meaning       String
+  onyomi        String
+  kunyomi       String
+  strokeCount   Int
+  level         JLPTLevel   @default(N5)
+  personalNotes String?
+  isLearned     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, level])
+}
+
+model GrammarNote {
+  id             String      @id @default(uuid())
+  userId         String
+  title          String
+  structure      String
+  meaning        String
+  usageNotes     String?     @db.Text
+  commonMistakes String?     @db.Text
+  level          JLPTLevel   @default(N5)
+  isLearned      Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, level])
+}
+
+model ReadingMaterial {
+  id              String      @id @default(uuid())
+  userId          String
+  title           String
+  japaneseTitle   String
+  filename        String
+  fileType        String      @default("story")
+  content         String      @db.Text
+  englishSummary  String?     @db.Text
+  readingProgress Int         @default(0)
+  level           JLPTLevel   @default(N5)
+  notes           String?     @db.Text
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, level])
+}
+
+model ActivityLog {
+  id              String      @id @default(uuid())
+  userId          String
+  type            String
+  description     String
+  durationMinutes Int         @default(0)
+  createdAt       DateTime    @default(now())
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model StudySession {
+  id              String      @id @default(uuid())
+  userId          String
+  durationSeconds Int
+  date            DateTime    @default(now())
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}

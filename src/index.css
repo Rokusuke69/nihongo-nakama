@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-japan-red: #BC002D;
+    --color-sakura-pink: #FFB7C5;
+    --color-sakura-light: #FFF0F3;
+    --color-sumi-black: #1E1F22;
+    --color-washi-white: #FAF9F6;
+  }
+}
+
+/* Custom Japanese calligraphy & typography classes */
+.font-japanese {
+  font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+}
+
+.font-sans-clean {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-duration: 150ms;
+}
+
+/* Washi paper subtle background texture simulation */
+.bg-washi-light {
+  background-color: #FAF9F6;
+  background-image: radial-gradient(rgba(188, 0, 45, 0.02) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.bg-washi-dark {
+  background-color: #121316;
+  background-image: radial-gradient(rgba(255, 183, 197, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Japanese flag circle split half effects */
+.japan-half-left {
+  border-top-left-radius: 9999px;
+  border-bottom-left-radius: 9999px;
+}
+
+.japan-half-right {
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(188, 0, 45, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(188, 0, 45, 0.4);
+}
